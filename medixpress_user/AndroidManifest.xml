@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/MediTheme" >
         <activity
-            android:name="com.medixpress.medixpress_vendor.MainActivity"
+            android:name="com.medixpress.user.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SearchActivity" >
+            android:name="com.medixpress.user.SearchActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
