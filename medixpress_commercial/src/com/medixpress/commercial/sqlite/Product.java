@@ -12,9 +12,9 @@ public class Product {
 	String date;
 	
 	// constructors
-	public Product(long productId, long vendorId, String name, float stock, float value) {
-		this.productId = productId;
-		this.vendorId = vendorId;
+	public Product(String name, float stock, float value) {
+		this.productId = 0;
+		this.vendorId = 0;
 		this.name = name;
 		this.stock = stock;
 		this.value = value;

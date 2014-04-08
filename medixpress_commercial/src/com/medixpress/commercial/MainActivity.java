@@ -5,6 +5,9 @@ import com.medixpress.medixpress_commercial.R;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -43,6 +46,13 @@ public class MainActivity extends Activity {
 		
 		// Set up PreferenceHelper
 		PreferenceHelper.setContext(this);
+		
+		Fragment fragment = new LoginFragment();
+
+		FragmentManager fm = getFragmentManager();
+		FragmentTransaction transaction = fm.beginTransaction();
+		transaction.replace(R.id.contentFragment, fragment);
+		transaction.commit();
 	}
 
 	@Override

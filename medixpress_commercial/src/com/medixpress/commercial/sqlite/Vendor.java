@@ -8,14 +8,14 @@ public class Vendor {
 	String hours;
 	
 	// constructors
-	public Vendor(long vendorId, String name, String location, String hours) {
-		this.vendorId = vendorId;
+	public Vendor(String name, String location, String hours) {
+		this.vendorId = 0;
 		this.name = name;
 		this.location = location;
 		this.hours = hours;
 	}
-	public Vendor(int vendorId, String name) {
-		this(vendorId, name, null, null);
+	public Vendor(String name) {
+		this(name, null, null);
 	}
 	public Vendor() {
 	}

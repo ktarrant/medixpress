@@ -87,8 +87,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
     
-    public long createProduct(Vendor vendor, Product product) {
-    	 SQLiteDatabase db = this.getWritableDatabase();
+    public Product addProduct(Vendor vendor, Product product) {
+    	SQLiteDatabase db = this.getWritableDatabase();
     	 
 	    ContentValues values = new ContentValues();
 	    //values.put(KEY_PRODUCTID, product.getProductId());
@@ -101,8 +101,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    values.put(KEY_DATE, product.getDate());
 	 
 	    // insert row
-	    long todo_id = db.insert(TABLE_PRODUCTS, null, values);
-	    return todo_id;
+	    product.setProductId(db.insert(TABLE_PRODUCTS, null, values));
+	    product.setVendorId(vendor.getVendorId());
+	    return product;
     }
     
     public Product getProduct(long productId) {
@@ -156,4 +157,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      
         return products;
     }
+    
+    public Vendor addVendor(Vendor vendor) {
+   	 SQLiteDatabase db = this.getWritableDatabase();
+   	 
+	    ContentValues values = new ContentValues();
+
+	    values.put(KEY_NAME, vendor.getName());
+	    values.put(KEY_LOCATION, vendor.getLocation());
+	    values.put(KEY_HOURS, vendor.getHours());
+	 
+	    // insert row
+	    vendor.setVendorId(db.insert(TABLE_VENDORS, null, values));
+	    return vendor;
+   }
+    
+   public Vendor getVendor(long vendorId) {
+       SQLiteDatabase db = this.getReadableDatabase();
+       
+       String selectQuery = "SELECT  * FROM " + TABLE_VENDORS + " WHERE "
+               + KEY_VENDORID + " = " + vendorId;
+    
+       Cursor c = db.rawQuery(selectQuery, null);
+    
+       if (c != null)
+           c.moveToFirst();
+    
+       Vendor rval = new Vendor();
+       rval.setVendorId(c.getInt(c.getColumnIndex(KEY_VENDORID)));
+       rval.setName(c.getString(c.getColumnIndex(KEY_NAME)));
+       rval.setLocation(c.getString(c.getColumnIndex(KEY_LOCATION)));
+       rval.setHours(c.getString(c.getColumnIndex(KEY_HOURS)));
+       return rval;
+   }
 }
