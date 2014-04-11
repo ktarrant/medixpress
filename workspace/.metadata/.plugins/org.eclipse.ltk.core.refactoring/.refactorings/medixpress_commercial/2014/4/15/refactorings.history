@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move package &apos;com.medixpress.commercial.sqlite&apos; to &apos;medixpress/src&apos;&#x0A;- Original project: &apos;medixpress_commercial&apos;&#x0A;- Destination element: &apos;medixpress/src&apos;&#x0A;- Original element: &apos;medixpress_commercial/src/com.medixpress.commercial.sqlite&apos;&#x0A;- Update references to refactored element" description="Move package" destination="=medixpress/src" element1="/src&lt;com.medixpress.commercial.sqlite" flags="589830" fragments="1" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.movePackages" stamp="1397239233730" version="1.0"/>
+</session>

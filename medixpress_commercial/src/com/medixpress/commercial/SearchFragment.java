@@ -2,7 +2,7 @@ package com.medixpress.commercial;
 
 import com.medixpress.medixpress_commercial.R;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
