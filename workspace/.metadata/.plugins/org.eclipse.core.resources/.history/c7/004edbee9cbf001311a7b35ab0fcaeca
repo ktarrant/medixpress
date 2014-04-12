@@ -1,7 +1,0 @@
-package com.medixpress.commercial;
-
-import android.app.ListFragment;
-
-public class ProductFragment extends ListFragment {
-
-}

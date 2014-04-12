@@ -1,10 +1,15 @@
 package com.medixpress.commercial;
 
-import com.medixpress.commercial.sqlite.DatabaseHelper;
-import com.medixpress.commercial.sqlite.DemoDatabase;
-import com.medixpress.commercial.sqlite.Vendor;
+import java.util.List;
+
+import com.medixpress.sqlite.DatabaseHelper;
+import com.medixpress.sqlite.DemoDatabase;
+import com.medixpress.sqlite.Product;
+import com.medixpress.sqlite.Vendor;
+
 import com.medixpress.medixpress_commercial.R;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v4.app.FragmentActivity;
@@ -28,24 +33,19 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements TabListener {
-	
-	private static final String ACTION_SEARCH = 
-			"android.intent.action.SEARCH";
+	private static final String TAG = "MainActivity";
 	
 	private Vendor vendor = null;
+	private List<Product> products = null;
 	private DatabaseHelper helper = null;
 	
 	private ViewPager viewPager = null;
 	private TabsPagerAdapter tabsAdapter = null;
 	
-	@Override
-	protected void onNewIntent(Intent intent) {
-		if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
-			doSearch(intent.getStringExtra(SearchManager.QUERY));
-		}
-	}
+	private boolean loggedIn = true;
 	
 
 	@Override
@@ -66,17 +66,7 @@ public class MainActivity extends FragmentActivity implements TabListener {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	// 
-	private void doSearch(String query) {
-		PreferenceHelper.setCurrentSearch(query);
-		
-		
-		Log.i("medixpress", "Search caught!");
-		
-		viewPager.setCurrentItem(2);
-	}
-
+//
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,8 +75,8 @@ public class MainActivity extends FragmentActivity implements TabListener {
 		// Set up PreferenceHelper
 		PreferenceHelper.setContext(this);
 		
-		helper = new DatabaseHelper(this);
-		//DemoDatabase.createDemoDatabase(helper);
+		//  Asynchronously loads the database
+		new InitDatabase().execute(getBaseContext());
 		
 		// Initilization
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -94,6 +84,11 @@ public class MainActivity extends FragmentActivity implements TabListener {
         //actionBar.setDisplayShowTitleEnabled(false);
         
         tabsAdapter = new TabsPagerAdapter(this);
+        if (products != null) {
+        	tabsAdapter.setProducts(products);
+        	Log.i(TAG, "tabsAdapter.setProducts @ onCreate : len(products) = "
+        			+ products.size());
+        }
         
         viewPager.setOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
@@ -115,14 +110,22 @@ public class MainActivity extends FragmentActivity implements TabListener {
         }
 	}
 	
+	public Vendor getVendor() {
+		return vendor;
+	}
+	
+	public DatabaseHelper getDatabaseHelper() {
+		return helper;
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+		/*
 		if (vendor == null) {
 		    Intent intent = new Intent(this, LoginActivity.class);
 		    startActivityForResult(intent, 1);
-		}
+		}*/
 	}
 	
 	@Override
@@ -162,4 +165,71 @@ public class MainActivity extends FragmentActivity implements TabListener {
 			// Load preferences from action_prefs.xml
 		}
 	}
+	
+	private class InitDatabase extends AsyncTask<Context, Void, DatabaseHelper> {
+		
+		protected DatabaseHelper doInBackground(Context...context) {
+			return new DatabaseHelper(context[0]);
+		}
+		
+		protected void onPostExecute(DatabaseHelper h) {
+			helper = h;
+			Log.i(TAG, "InitDatabase");
+			if (helper == null) {
+				  Toast.makeText(getBaseContext(), 
+					"Could not reach MediXpress database. "+
+					"Please try again later.", Toast.LENGTH_LONG).show();
+			} else {
+				// Create a fake database. In the future, a vendorId
+				// will be obtained from login which will be used
+				// throughout the session
+				long vendorId = DemoDatabase.createDemoDatabase(helper);
+				
+				// Load the vendor from the database asynchronously
+				new InitVendor().execute(vendorId);
+			}
+		}
+	}
+	
+	private class InitVendor extends AsyncTask<Long, Void, Vendor> {
+		
+	  protected Vendor doInBackground(Long... vendorId) {
+	      helper = new DatabaseHelper(getBaseContext());
+	      return helper.getVendor(vendorId[0]);
+	  }
+	
+	  protected void onPostExecute(Vendor dv) {
+		  vendor = dv;
+		  Log.i(TAG, "InitVendor : " + dv.getName());
+		  if (vendor == null) {
+			  Toast.makeText(getBaseContext(), 
+				"There was an error logging into MediXpress. "+
+				"Please try again later.", Toast.LENGTH_LONG).show();
+		  } else {
+			  getActionBar().setTitle(dv.getName());
+			  
+			  new InitProducts().execute(vendor);
+		  }
+	  }
+	}
+	
+	private class InitProducts extends AsyncTask<Vendor, Void, List<Product>> {
+		
+		  protected List<Product> doInBackground(Vendor... vendor) {
+		      return helper.getAllProducts(vendor[0]);
+		  }
+		
+		  protected void onPostExecute(List<Product> p) {
+			  products = p;
+			  if (products == null) {
+				  Toast.makeText(getBaseContext(), 
+					"Failed to load products from database. "+
+					"Please try again later.", Toast.LENGTH_LONG).show();
+			  } else if (tabsAdapter != null) {
+		        	Log.i(TAG, "tabsAdapter.setProducts @ InitProducts : len(products) = "
+		        			+ products.size());
+				  tabsAdapter.setProducts(p);
+			  }
+		  }
+		}
 }
