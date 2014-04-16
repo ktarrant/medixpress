@@ -6,7 +6,7 @@
 
     
     <string name="action_search">MediXpress Search</string>
-    <string name="search_hint">Enter an strain, customer, order #, or anything else&#8230;</string>
+    <string name="search_hint">Quick search&#8230;</string>
     
     <string name="username">Username:</string>
 	<string name="password">Password:</string>
@@ -15,4 +15,5 @@
 	
 	<string name="search">Search</string>
 	<string name="products">Products</string>
+	<string name="orders">Orders</string>
 </resources>

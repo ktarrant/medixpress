@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.medixpress.medixpress_commercial.R;
 import com.medixpress.sqlite.DatabaseHelper;
+import com.medixpress.sqlite.Order;
 import com.medixpress.sqlite.Product;
 
 import android.support.v4.app.Fragment;
@@ -19,8 +20,10 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	
 	private ProductFragment productFragment = null;
 	private SearchFragment searchFragment = null;
+	private OrderFragment orderFragment = null;
 	
 	private List<Product> products = null;
+	private List<Order> orders = null;
 
 	public TabsPagerAdapter(MainActivity parentActivity) {
 		super(parentActivity.getSupportFragmentManager());
@@ -32,6 +35,10 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	public Fragment getItem(int index) {
         switch (index) {
         case 0:
+        	if (orderFragment == null)
+        		orderFragment = new OrderFragment();
+        	return orderFragment;
+        case 1:
             if (productFragment == null) {
             	productFragment = new ProductFragment();
             	if (products != null) {
@@ -41,25 +48,25 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             	
             }
             return productFragment;
-        case 1:
+        case 2:
         	if (searchFragment == null)
         		searchFragment = new SearchFragment();
             return searchFragment;
         }
- 
         return null;
 	}
 
 	@Override
 	public int getCount() {
-		return 2;
+		return 3;
 	}
 
 	public String[] getTabLabels() {
 		String[] rval = new String[getCount()];
 		
-		rval[0] = parentActivity.getString(R.string.products);
-		rval[1] = parentActivity.getString(R.string.search);
+		rval[0] = parentActivity.getString(R.string.orders);
+		rval[1] = parentActivity.getString(R.string.products);
+		rval[2] = parentActivity.getString(R.string.search);
 				
 		return rval;
 	}
@@ -68,6 +75,13 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 		this.products = products;
 		if (productFragment != null) {
 			productFragment.setProducts(products);
+		}
+	}
+	
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+		if (orderFragment != null) {
+		     orderFragment.setOrders(orders);
 		}
 	}
 }

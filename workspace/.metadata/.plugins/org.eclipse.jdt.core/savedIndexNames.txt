@@ -1,6 +1,0 @@
-INDEX VERSION 1.126+/home/ktarrant/dev/medixpress/workspace/.metadata/.plugins/org.eclipse.jdt.core
-715607870.index
-2137387905.index
-3825769659.index
-2083131023.index
-180744412.index

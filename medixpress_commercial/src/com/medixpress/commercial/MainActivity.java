@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.medixpress.sqlite.DatabaseHelper;
 import com.medixpress.sqlite.DemoDatabase;
+import com.medixpress.sqlite.Order;
 import com.medixpress.sqlite.Product;
 import com.medixpress.sqlite.Vendor;
 
@@ -40,6 +41,7 @@ public class MainActivity extends FragmentActivity implements TabListener {
 	
 	private Vendor vendor = null;
 	private List<Product> products = null;
+	private List<Order> orders = null;
 	private DatabaseHelper helper = null;
 	
 	private ViewPager viewPager = null;
@@ -229,6 +231,27 @@ public class MainActivity extends FragmentActivity implements TabListener {
 		        	Log.i(TAG, "tabsAdapter.setProducts @ InitProducts : len(products) = "
 		        			+ products.size());
 				  tabsAdapter.setProducts(p);
+			  }
+			  new InitOrders().execute(vendor);
+		  }
+		}
+	
+	private class InitOrders extends AsyncTask<Vendor, Void, List<Order>> {
+		
+		  protected List<Order> doInBackground(Vendor... vendor) {
+		      return helper.getAllOrders(vendor[0]);
+		  }
+		
+		  protected void onPostExecute(List<Order> o) {
+			  orders = o;
+			  if (orders == null) {
+				  Toast.makeText(getBaseContext(), 
+					"Failed to load orders from database. "+
+					"Please try again later.", Toast.LENGTH_LONG).show();
+			  } else if (tabsAdapter != null) {
+		        	Log.i(TAG, "tabsAdapter.setOrders @ InitOrders : len(orders) = "
+		        			+ orders.size());
+				  tabsAdapter.setOrders(o);
 			  }
 		  }
 		}
