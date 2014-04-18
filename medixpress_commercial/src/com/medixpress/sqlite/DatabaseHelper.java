@@ -44,6 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Orders table - column names
     private static final String KEY_ORDERID = "orderId";
     private static final String KEY_AMOUNT = "amount";
+    private static final String KEY_TIME = "time";
  
     // Vendors table - column names
     private static final String KEY_LOCATION = "location";
@@ -71,7 +72,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     		KEY_CONSUMERID + " INTEGER," + 
     		KEY_VENDORID + " INTEGER," + 
     		KEY_PRODUCTID + " INTEGER," + 
-    		KEY_AMOUNT + " REAL)";
+    		KEY_AMOUNT + " REAL, " + 
+    		KEY_TIME + " INTEGER)";
  
     // Vendor table create statement
     private static final String CREATE_TABLE_VENDORS = 
@@ -93,12 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
  
     @Override
     public void onCreate(SQLiteDatabase db) {
- 
-        // creating required tables
-        db.execSQL(CREATE_TABLE_PRODUCTS);
-        db.execSQL(CREATE_TABLE_ORDERS);
-        db.execSQL(CREATE_TABLE_VENDORS);
-        db.execSQL(CREATE_TABLE_CONSUMERS);
+    	init();
     }
  
     @Override
@@ -202,7 +199,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
        
        String selectQuery = "SELECT  * FROM " + TABLE_VENDORS + " WHERE "
                + KEY_VENDORID + " = " + vendorId;
-    
        Cursor c = db.rawQuery(selectQuery, null);
     
        if (c != null)
@@ -233,6 +229,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
        rval.setProductId(c.getInt(c.getColumnIndex(KEY_PRODUCTID)));
        rval.setConsumerId(c.getInt(c.getColumnIndex(KEY_CONSUMERID)));
        rval.setAmount(c.getFloat(c.getColumnIndex(KEY_AMOUNT)));
+       //rval.setTime(c.getInt(c.getColumnIndex(KEY_TIME)));
        return rval;
    }
    
@@ -253,6 +250,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                rval.setProductId(c.getInt(c.getColumnIndex(KEY_PRODUCTID)));
                rval.setConsumerId(c.getInt(c.getColumnIndex(KEY_CONSUMERID)));
                rval.setAmount(c.getFloat(c.getColumnIndex(KEY_AMOUNT)));
+               //rval.setTime(c.getInt(c.getColumnIndex(KEY_TIME)));
                // adding to todo list
                orders.add(rval);
            } while (c.moveToNext());
@@ -269,9 +267,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    values.put(KEY_PRODUCTID, order.getProductId());
 	    values.put(KEY_CONSUMERID, order.getConsumerId());
 	    values.put(KEY_AMOUNT, order.getAmount());
+	    //values.put(KEY_TIME, order.getTime());
 	    
 	    // insert row
 	    order.setOrderId(db.insert(TABLE_ORDERS, null, values));
 	    return order;
+   }
+   
+   private void init() {
+	   SQLiteDatabase db = this.getWritableDatabase();
+       // creating required tables
+       db.execSQL(CREATE_TABLE_PRODUCTS);
+       db.execSQL(CREATE_TABLE_ORDERS);
+       db.execSQL(CREATE_TABLE_VENDORS);
+       db.execSQL(CREATE_TABLE_CONSUMERS);
+   }
+   
+   public void reset() {
+	   SQLiteDatabase db = this.getWritableDatabase();
+	   // clear database
+	   db.delete(TABLE_PRODUCTS, null, null);
+	   db.delete(TABLE_ORDERS, null, null);
+	   db.delete(TABLE_VENDORS, null, null);
+	   db.delete(TABLE_CONSUMERS, null, null);
+	   // start again
+	   init();
    }
 }

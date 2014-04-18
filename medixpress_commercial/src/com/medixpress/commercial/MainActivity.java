@@ -1,6 +1,15 @@
 package com.medixpress.commercial;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.medixpress.sqlite.DatabaseHelper;
 import com.medixpress.sqlite.DemoDatabase;
@@ -28,6 +37,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,6 +58,7 @@ public class MainActivity extends FragmentActivity implements TabListener {
 	
 	private ViewPager viewPager = null;
 	private TabsPagerAdapter tabsAdapter = null;
+	Map<Long, Bitmap> productImages = new HashMap<Long, Bitmap>();
 	
 	private boolean loggedIn = true;
 	
@@ -68,11 +81,25 @@ public class MainActivity extends FragmentActivity implements TabListener {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.i("MainActivity", "onResume");
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.i("MainActivity", "onPause");
+	}
+
 //
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Log.i("MainActivity", "onCreate");
 		
 		// Set up PreferenceHelper
 		PreferenceHelper.setContext(this);
@@ -90,6 +117,11 @@ public class MainActivity extends FragmentActivity implements TabListener {
         	tabsAdapter.setProducts(products);
         	Log.i(TAG, "tabsAdapter.setProducts @ onCreate : len(products) = "
         			+ products.size());
+        }
+        if (orders != null) {
+        	tabsAdapter.setOrders(orders);
+        	Log.i(TAG, "tabsAdapter.setProducts @ onCreate : len(orders) = "
+        			+ orders.size());
         }
         
         viewPager.setOnPageChangeListener(
@@ -118,16 +150,6 @@ public class MainActivity extends FragmentActivity implements TabListener {
 	
 	public DatabaseHelper getDatabaseHelper() {
 		return helper;
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		/*
-		if (vendor == null) {
-		    Intent intent = new Intent(this, LoginActivity.class);
-		    startActivityForResult(intent, 1);
-		}*/
 	}
 	
 	@Override
@@ -185,8 +207,12 @@ public class MainActivity extends FragmentActivity implements TabListener {
 				// Create a fake database. In the future, a vendorId
 				// will be obtained from login which will be used
 				// throughout the session
-				long vendorId = DemoDatabase.createDemoDatabase(helper);
-				
+				long vendorId;
+				if (vendor == null) {
+					vendorId = DemoDatabase.createDemoDatabase(helper);
+				} else {
+					vendorId = vendor.getVendorId();
+				}
 				// Load the vendor from the database asynchronously
 				new InitVendor().execute(vendorId);
 			}
@@ -253,6 +279,75 @@ public class MainActivity extends FragmentActivity implements TabListener {
 		        			+ orders.size());
 				  tabsAdapter.setOrders(o);
 			  }
+			  new LoadImages().execute(products);
 		  }
 		}
+	
+	private Bitmap loadImageFromCache(Long productId) {
+		File cacheDir = new File(getCacheDir(), "products");
+		cacheDir.mkdirs();
+		final String fn = String.format("%016X", productId);
+		File[] pFiles = cacheDir.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				if (pathname.getAbsolutePath().contains(fn)) {
+					return true;
+				}
+				return false;
+			}
+		});
+		if (pFiles.length == 0) {
+			return null;
+		} else {
+			return BitmapFactory.decodeFile(pFiles[0].getAbsolutePath());
+		}
+	}
+	
+	public void saveImageToCache(Long productId, Bitmap img) {   
+	    File cacheDir = new File(this.getCacheDir(), "products");
+	    cacheDir.mkdirs();
+	    final String fn = String.format("%016X", productId);
+	    File cacheFile = new File(cacheDir, fn+".png");   
+	    try {      
+            cacheFile.createNewFile();       
+            FileOutputStream fos = new FileOutputStream(cacheFile);    
+            img.compress(CompressFormat.PNG, 100, fos);       
+            fos.flush();       
+            fos.close();    
+          } catch (Exception e) {       
+            Log.e("error", "Error when saving image to cache. ", e);    
+          }
+	}
+	
+	private class LoadImages extends AsyncTask<List<Product>, Void, Map<Long, Bitmap>> {
+		
+		@Override
+		protected Map<Long, Bitmap> doInBackground(List<Product>... products) {
+			HashMap<Long, Bitmap> rval = new HashMap<Long, Bitmap>();
+			for (Product product : products[0]) {
+				// First try to load from cache
+				Bitmap img = loadImageFromCache(product.getProductId());
+				// If not cache then query server for img
+				if (img == null) {
+					// TODO: Query server for image if it doesn't work
+					img = DemoDatabase.createDemoBitmap(getBaseContext(), product.getProductId());
+					if (img != null) {
+						saveImageToCache(product.getProductId(), img);
+					}
+				}
+				rval.put(product.getProductId(), img);
+			}
+			return rval;
+		}
+		
+		@Override
+		protected void onPostExecute(Map<Long, Bitmap> img_arr) {
+			productImages = img_arr;
+			if (tabsAdapter != null) {
+				tabsAdapter.setProductImages(img_arr);
+			}
+		}
+	}
+	
+	
 }

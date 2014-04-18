@@ -1,5 +1,7 @@
 package com.medixpress.commercial;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import com.medixpress.medixpress_commercial.R;
@@ -9,6 +11,7 @@ import com.medixpress.sqlite.Product;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,11 +111,13 @@ public class OrderListAdapter extends BaseAdapter {
 							product.getName())));
 			
 			// The description has symptoms and keywords is they are not null
+			SimpleDateFormat f = new SimpleDateFormat("HH:mm:ss MM/dd");
+			
 			descriptionView.setText(Html.fromHtml(String.format(
-					"Order from <i>%s</i>.<br>"+
+					"Ordered from <i>%s</i> at <i>%s</i><br>"+
 					"%.2f g @ <b>$%.2f per g</b> ($%.2f value).<br>" + 
 					"<b>%.2f g</b> remaining in stock.",
-					order.getConsumerId(),
+					order.getConsumerId(), f.format(new Date(order.getTime())),
 					order.getAmount(), product.getValue(),
 					saleValue, product.getStock())));
 			// TODO: replace consumerId with a Consumer object

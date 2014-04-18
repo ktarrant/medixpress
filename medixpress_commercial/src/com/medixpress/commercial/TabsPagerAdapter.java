@@ -2,12 +2,14 @@ package com.medixpress.commercial;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.medixpress.medixpress_commercial.R;
 import com.medixpress.sqlite.DatabaseHelper;
 import com.medixpress.sqlite.Order;
 import com.medixpress.sqlite.Product;
 
+import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +26,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	
 	private List<Product> products = null;
 	private List<Order> orders = null;
+	private Map<Long, Bitmap> productImages = null;
 
 	public TabsPagerAdapter(MainActivity parentActivity) {
 		super(parentActivity.getSupportFragmentManager());
@@ -35,14 +38,20 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	public Fragment getItem(int index) {
         switch (index) {
         case 0:
-        	if (orderFragment == null)
+        	if (orderFragment == null) {
         		orderFragment = new OrderFragment();
+	        	if (orders != null) {
+	        		orderFragment.setOrders(orders);
+	        	}	
+        	}
         	return orderFragment;
         case 1:
             if (productFragment == null) {
             	productFragment = new ProductFragment();
             	if (products != null) {
             		productFragment.setProducts(products);
+            		if (productImages != null)
+            			productFragment.setProductImages(productImages);
             	}
             } else {
             	
@@ -63,7 +72,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
 	public String[] getTabLabels() {
 		String[] rval = new String[getCount()];
-		
+		//
 		rval[0] = parentActivity.getString(R.string.orders);
 		rval[1] = parentActivity.getString(R.string.products);
 		rval[2] = parentActivity.getString(R.string.search);
@@ -82,6 +91,13 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 		this.orders = orders;
 		if (orderFragment != null) {
 		     orderFragment.setOrders(orders);
+		}
+	}
+	
+	public void setProductImages(Map<Long, Bitmap> productImages) {
+		this.productImages = productImages;
+		if (productFragment != null) {
+			productFragment.setProductImages(productImages);
 		}
 	}
 }

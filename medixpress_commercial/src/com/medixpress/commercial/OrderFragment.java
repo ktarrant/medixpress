@@ -23,7 +23,9 @@ public class OrderFragment extends Fragment {
         Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.rootView = (ListView)inflater.inflate(R.layout.layout_list, container, false);
-        	
+        if (adapter != null) {
+        	this.rootView.setAdapter(adapter);
+        }
         return this.rootView;
     }
     

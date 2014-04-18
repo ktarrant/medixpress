@@ -9,14 +9,16 @@ public class Order {
 	long consumerId;
 	long orderId;
 	float amount;
+	long time;
 	
 	// constructors
-	public Order(long productId, long consumerId, long vendorId, float amount) {
+	public Order(long productId, long consumerId, long vendorId, float amount, long time) {
 		this.productId = productId;
 		this.vendorId = vendorId;
 		this.consumerId = consumerId;
 		this.amount = amount;
 		this.orderId = 0;
+		this.time = time;
 	}
 	
 	public Order() {
@@ -32,6 +34,7 @@ public class Order {
 	public void setConsumerId(long consumerId) { this.consumerId = consumerId; }
 	public void setOrderId(long orderId) { this.orderId = orderId; }
 	public void setAmount(float amount) { this.amount = amount; }
+	public void setTime(long time) { this.time = time; }
 	public void fromCursor(Cursor c) {
 		
 	}
@@ -42,5 +45,6 @@ public class Order {
 	public long getConsumerId() { return this.consumerId; }
 	public long getOrderId() { return this.orderId; }
 	public float getAmount() { return this.amount; }
+	public long getTime() { return this.time; }
 
 }

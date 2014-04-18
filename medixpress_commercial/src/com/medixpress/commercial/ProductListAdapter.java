@@ -1,11 +1,14 @@
 package com.medixpress.commercial;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.medixpress.medixpress_commercial.R;
 import com.medixpress.sqlite.Product;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -19,6 +22,8 @@ import android.widget.TextView;
 public class ProductListAdapter extends BaseAdapter {
 
 	private LayoutInflater inflater = null;
+    private Map<Long, Bitmap> productImages = null;
+    private Map<Long, ProductListItem> productItems = null;
 	private List<Product> products;
 	private Context context;
 	
@@ -33,6 +38,8 @@ public class ProductListAdapter extends BaseAdapter {
 	public ProductListAdapter(Context context, List<Product> products) {
 	    this.products = products;
 	    this.context = context;
+	    this.productImages = new HashMap<Long, Bitmap>();
+	    this.productItems = new HashMap<Long, ProductListItem>();
 	    inflater = (LayoutInflater) 
 	    		context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -53,6 +60,7 @@ public class ProductListAdapter extends BaseAdapter {
 			ProductListItem productView = new ProductListItem(context);
 			productView.setProduct(products.get(position));
 			//productView.setOnClickListener(productPressListener);
+			productItems.put(products.get(position).getProductId(), productView);
 			return productView;
 		} else return convertView;
 	}
@@ -60,6 +68,19 @@ public class ProductListAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(int position) {
 		return products.get(position).getProductId();
+	}
+	
+	public void setProductImages(Map<Long, Bitmap> productImages) {
+		this.productImages = productImages;
+		for (Product product : products) {
+			Bitmap pI = productImages.get(product.getProductId());
+			if (pI != null) {
+				ProductListItem I = productItems.get(product.getProductId());
+				if (I != null) {
+					I.setImage(pI);
+				}
+			}
+		}
 	}
 
 	
@@ -75,9 +96,9 @@ public class ProductListAdapter extends BaseAdapter {
 
 		public ProductListItem(Context context, AttributeSet attrs) {
 			super(context, attrs);
-			
 			initView();
 		}
+		
 		
 		public ProductListItem(Context context) {
 			super(context);
@@ -90,11 +111,21 @@ public class ProductListAdapter extends BaseAdapter {
 			this.addView(rootView);
 		}
 		
+		public void setImage(Bitmap img) {
+			ImageView imageView = (ImageView) rootView.findViewById(R.id.productImage);
+			imageView.setImageBitmap(img);
+		}
+		
 		public void setProduct(Product product) {
 			ImageView imageView = (ImageView) rootView.findViewById(R.id.productImage);
 			TextView titleView = (TextView) rootView.findViewById(R.id.productTitle);
 			TextView summaryView = (TextView) rootView.findViewById(R.id.productSummary);
 			TextView descriptionView = (TextView) rootView.findViewById(R.id.productDescription);
+			
+			// Get image from HashMap
+			if (productImages.containsKey(product.getProductId())) {
+				imageView.setImageBitmap(productImages.get(product.getProductId()));
+			}
 			
 			// titleView has the name
 			titleView.setText(product.getName());
