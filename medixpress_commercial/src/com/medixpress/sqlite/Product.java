@@ -12,9 +12,10 @@ public class Product {
 	String symptoms;
 	String keywords;
 	String date;
+	int typeId;
 	
 	// constructors
-	public Product(String name, float stock, float value) {
+	public Product(String name, float stock, float value, int typeId) {
 		this.productId = 0;
 		this.vendorId = 0;
 		this.name = name;
@@ -23,6 +24,7 @@ public class Product {
 		this.symptoms = null;
 		this.keywords = null;
 		this.date = null;
+		this.typeId = typeId;
 	}
 	
 	public Product() {
@@ -37,6 +39,7 @@ public class Product {
 	public void setSymptoms(String symptoms) { this.symptoms = symptoms; }
 	public void setKeywords(String keywords) { this.keywords = keywords; }
 	public void setDate(String date) { this.date = date; }
+	public void setTypeId(int typeId) { this.typeId = typeId; }
 	
 	// getters
 	public long getProductId() { return this.productId; }
@@ -47,4 +50,5 @@ public class Product {
 	public String getSymptoms()  { return this.symptoms; }
 	public String getKeywords() { return this.keywords; }
 	public String getDate() { return this.date; }
+	public int getTypeId() { return this.typeId; }
 }

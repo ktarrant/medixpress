@@ -330,7 +330,7 @@ public class MainActivity extends FragmentActivity implements TabListener {
 				// If not cache then query server for img
 				if (img == null) {
 					// TODO: Query server for image if it doesn't work
-					img = DemoDatabase.createDemoBitmap(getBaseContext(), product.getProductId());
+					img = DemoDatabase.createDemoBitmap(getBaseContext(), product);
 					if (img != null) {
 						saveImageToCache(product.getProductId(), img);
 					}

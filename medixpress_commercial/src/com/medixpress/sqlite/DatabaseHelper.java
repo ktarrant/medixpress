@@ -40,6 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_SYMPTOMS = "symptoms";
     private static final String KEY_KEYWORDS = "keywords";
     private static final String KEY_DATE = "date";
+    private static final String KEY_TYPEID = "typeId";
     
     // Orders table - column names
     private static final String KEY_ORDERID = "orderId";
@@ -63,7 +64,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     		KEY_STOCK + " REAL," +
     		KEY_VALUE + " REAL," + 
     		KEY_SYMPTOMS + " TEXT," +
-            KEY_KEYWORDS + " TEXT)";
+            KEY_KEYWORDS + " TEXT," +
+    		KEY_TYPEID + " INTEGER" + ")";
     
     // Orders table create statement
     private static final String CREATE_TABLE_ORDERS = 
@@ -95,7 +97,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
  
     @Override
     public void onCreate(SQLiteDatabase db) {
-    	init();
+        // creating required tables
+        db.execSQL(CREATE_TABLE_PRODUCTS);
+        db.execSQL(CREATE_TABLE_ORDERS);
+        db.execSQL(CREATE_TABLE_VENDORS);
+        db.execSQL(CREATE_TABLE_CONSUMERS);
     }
  
     @Override
@@ -121,7 +127,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    values.put(KEY_VALUE, product.getValue());
 	    values.put(KEY_SYMPTOMS, product.getSymptoms());
 	    values.put(KEY_KEYWORDS, product.getKeywords());
-	    //values.put(KEY_DATE, product.getDate());
+	    values.put(KEY_TYPEID, product.getTypeId());
 	 
 	    // insert row
 	    product.setProductId(db.insert(TABLE_PRODUCTS, null, values));
@@ -149,6 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         rval.setSymptoms(c.getString(c.getColumnIndex(KEY_SYMPTOMS)));
         rval.setKeywords(c.getString(c.getColumnIndex(KEY_KEYWORDS)));
         //rval.setDate(c.getString(c.getColumnIndex(KEY_DATE)));
+        rval.setTypeId(c.getInt(c.getColumnIndex(KEY_TYPEID)));
         
         return rval;
     }
@@ -172,6 +179,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 rval.setValue(c.getFloat(c.getColumnIndex(KEY_VALUE)));
                 rval.setSymptoms(c.getString(c.getColumnIndex(KEY_SYMPTOMS)));
                 rval.setKeywords(c.getString(c.getColumnIndex(KEY_KEYWORDS)));
+                rval.setTypeId(c.getInt(c.getColumnIndex(KEY_TYPEID)));
                 // adding to todo list
                 products.add(rval);
             } while (c.moveToNext());
@@ -274,15 +282,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    return order;
    }
    
-   private void init() {
-	   SQLiteDatabase db = this.getWritableDatabase();
-       // creating required tables
-       db.execSQL(CREATE_TABLE_PRODUCTS);
-       db.execSQL(CREATE_TABLE_ORDERS);
-       db.execSQL(CREATE_TABLE_VENDORS);
-       db.execSQL(CREATE_TABLE_CONSUMERS);
-   }
-   
    public void reset() {
 	   SQLiteDatabase db = this.getWritableDatabase();
 	   // clear database
@@ -290,7 +289,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	   db.delete(TABLE_ORDERS, null, null);
 	   db.delete(TABLE_VENDORS, null, null);
 	   db.delete(TABLE_CONSUMERS, null, null);
-	   // start again
-	   init();
    }
 }

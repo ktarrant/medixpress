@@ -37,27 +37,27 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	public Fragment getItem(int index) {
         switch (index) {
         case 0:
-        	if (orderFragment == null) {
+        	//if (orderFragment == null) {
         		orderFragment = new OrderFragment();
 	        	if (orders != null) {
 	        		orderFragment.setOrders(orders);
 	        	}	
-        	}
+        	//}
         	return orderFragment;
         case 1:
-            if (productFragment == null) {
+            //if (productFragment == null) {
             	productFragment = new ProductFragment();
             	if (products != null) {
             		productFragment.setProducts(products);
             		if (productImages != null)
             			productFragment.setProductImages(productImages);
             	}
-            } else {
+            //} else {
             	
-            }
+            //}
             return productFragment;
         case 2:
-        	if (reportFragment == null)
+        	//if (reportFragment == null)
         		reportFragment = new ReportFragment();
             return reportFragment;
         }
@@ -74,7 +74,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 		//
 		rval[0] = parentActivity.getString(R.string.orders);
 		rval[1] = parentActivity.getString(R.string.products);
-		rval[2] = parentActivity.getString(R.string.search);
+		rval[2] = parentActivity.getString(R.string.reports);
 				
 		return rval;
 	}
