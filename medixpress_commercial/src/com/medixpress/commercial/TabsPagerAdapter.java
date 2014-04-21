@@ -10,10 +10,9 @@ import com.medixpress.sqlite.Order;
 import com.medixpress.sqlite.Product;
 
 import android.graphics.Bitmap;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.support.v13.app.FragmentPagerAdapter;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 	
@@ -21,7 +20,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	private DatabaseHelper helper = null;
 	
 	private ProductFragment productFragment = null;
-	private SearchFragment searchFragment = null;
+	private ReportFragment reportFragment = null;
 	private OrderFragment orderFragment = null;
 	
 	private List<Product> products = null;
@@ -29,7 +28,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 	private Map<Long, Bitmap> productImages = null;
 
 	public TabsPagerAdapter(MainActivity parentActivity) {
-		super(parentActivity.getSupportFragmentManager());
+		super(parentActivity.getFragmentManager());
 		
 		this.parentActivity = parentActivity;
 	}
@@ -58,9 +57,9 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             }
             return productFragment;
         case 2:
-        	if (searchFragment == null)
-        		searchFragment = new SearchFragment();
-            return searchFragment;
+        	if (reportFragment == null)
+        		reportFragment = new ReportFragment();
+            return reportFragment;
         }
         return null;
 	}

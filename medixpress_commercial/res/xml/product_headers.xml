@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+    <header 
+        android:fragment="com.medixpress.commercial.ProductFragment"
+        android:title="Flowers"
+        android:summary="Dried flowers and buds.">
+    	<extra android:name="typeId" android:value="0" />
+    </header>
+    <header 
+        android:fragment="com.medixpress.commercial.ProductFragment"
+        android:title="Edibles"
+        android:summary="Yummy medicinal food." >
+        <extra android:name="typeId" android:value="1" />
+    </header>
+    <header 
+        android:fragment="com.medixpress.commercial.ProductFragment"
+        android:title="Tinctures"
+        android:summary="Condensed extractions for easy and discrete use." >
+        <extra android:name="typeId" android:value="2" />
+    </header>
+    <header
+        android:fragment="com.medixpress.commercial.ProductFragment"
+        android:title="Shatter"
+        android:summary="Powerful hash and hash oil." >
+        <extra android:name="typeId" android:value="3" />
+    </header>
+</preference-headers>

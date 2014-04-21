@@ -11,7 +11,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.preference.PreferenceFragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-public class ProductFragment extends Fragment {
-	
+public class ProductFragment extends PreferenceFragment {
 	private ListView rootView = null;
 	private ProductListAdapter adapter = null;
 	
@@ -29,7 +29,8 @@ public class ProductFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        this.rootView = (ListView)inflater.inflate(R.layout.layout_list, container, false);
+        View frame = inflater.inflate(R.layout.layout_list, container, false);
+        this.rootView = (ListView) frame.findViewById(R.id.list_content);
         if (adapter != null) {
         	this.rootView.setAdapter(adapter);
         }

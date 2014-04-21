@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceScreen
+        android:key="sales_pref"
+        android:title="Sales Reports">
+        <Preference
+            android:key="sales_daily_pref"
+            android:title="Daily Report"
+            android:summary="A summary of the day's sales." />
+        <Preference
+            android:key="sales_weekly_pref"
+            android:title="Weekly Report"
+            android:summary="A summary of the week's sales." />
+        <Preference
+            android:key="sales_monthly_pref"
+            android:title="Daily Report"
+            android:summary="A summary of the month's sales." />
+        <Preference
+            android:key="sales_average_pref"
+            android:title="Total Average Sales Report"
+            android:summary="Analysis of average sales over time." />
+    </PreferenceScreen>
+    <Preference
+        android:key="bvw_pref"
+        android:title="Best vs. Worst"
+        android:summary="A comparison of best-selling and worst-selling products.">
+    </Preference>
+    <PreferenceScreen
+        android:key="mgmt_pref"
+        android:title="Store Management">
+        <Preference
+            android:key="mgmt_rewards_pref"
+            android:title="Rewards Program"
+            android:summary="Review and edit your rewards program." />
+        <Preference
+            android:key="mgmt_employee_pref"
+            android:title="Employee Management"
+            android:summary="Manage your employees' hours and salary." />
+    </PreferenceScreen>
+</PreferenceScreen>

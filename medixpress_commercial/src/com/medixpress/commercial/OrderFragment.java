@@ -7,10 +7,11 @@ import com.medixpress.sqlite.Order;
 import com.medixpress.sqlite.Product;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class OrderFragment extends Fragment {
@@ -22,7 +23,8 @@ public class OrderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        this.rootView = (ListView)inflater.inflate(R.layout.layout_list, container, false);
+        View frame = inflater.inflate(R.layout.layout_list, container, false);
+        this.rootView = (ListView) frame.findViewById(R.id.list_content);
         if (adapter != null) {
         	this.rootView.setAdapter(adapter);
         }
